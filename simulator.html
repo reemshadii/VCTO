@@ -3,511 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulator | VCTO</title>
-    <script src="https://cdn.jsdelivr.net/npm/color-thief@2.3.2/dist/color-thief.min.js"></script>
+    <title>Professional Color Analysis</title>
     <style>
-        /* --- GLOBAL VARIABLES --- */
         :root {
-            --bg-color: #0b0c15;
-            --card-bg: #161b2c;
-            --text-primary: #ffffff;
+            --primary: #6366f1;
+            --card-bg: #1a202c;
+            --text-main: #f7fafc;
             --text-secondary: #a0aec0;
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --accent-color: #6366f1;
-            --border-color: #2d3748;
-            --success-color: #10b981;
-            --error-color: #ef4444;
         }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* NAVIGATION */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 3rem;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            position: relative;
-        }
-
-        .brand-container {
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            z-index: 10;
-        }
-
-        .brand-name {
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: white;
-            line-height: 1;
-        }
-
-        .brand-subtitle {
-            font-size: 0.75rem;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .nav-link:hover {
-            color: white;
-        }
-
-        .menu-icon {
-            display: none;
-            font-size: 1.8rem;
-            color: white;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        /* STEPPER */
-        .stepper-wrapper {
-            padding: 2rem 0;
-            border-bottom: 1px solid #1f2937;
-            margin-bottom: 2rem;
-            overflow-x: auto;
-        }
-
-        .stepper {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            min-width: 600px;
-        }
-
-        .step-dot {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            cursor: default;
-            flex-shrink: 0;
-        }
-
-        .step-dot.active {
-            background: var(--accent-gradient);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 0 10px rgba(99,102,241,0.5);
-        }
-
-        .step-dot.completed {
-            background: var(--success-color);
-            color: white;
-            border-color: transparent;
-        }
-
-        /* CONTENT */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px 50px 20px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .step-content {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .step-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .desc {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .btn {
-            padding: 14px 30px;
-            border-radius: 50px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            color: white;
-            transition: transform 0.2s;
-            display: inline-block;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .btn-primary { background: var(--accent-gradient); }
-        .btn-secondary { background: #2d3748; }
-
-        .upload-box {
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 3rem;
-            text-align: center;
-            background: rgba(22, 27, 44, 0.5);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upload-box:hover {
-            border-color: var(--accent-color);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .file-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .color-palette {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .swatch {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid white;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .swatch:hover { transform: scale(1.1); }
-
-        /* STEP 8: NEW ANALYSIS STYLES */
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .analysis-card {
-            background: var(--card-bg);
-            padding: 1.25rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        #full-picture-card {
-            text-align: left;
-            margin-top: 1rem;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 2rem;
-        }
-
-        .result-card {
-            background: black;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .result-img {
-            width: 100%;
-            height: 200px;
-            background-color: #2d3748;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .color-tag {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.7);
-            padding: 5px;
-            font-size: 0.8rem;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            nav { padding: 1.5rem 1.5rem; }
-            .menu-icon { display: block; }
-            .nav-links {
-                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background-color: var(--bg-color);
-                flex-direction: column; justify-content: center; align-items: center;
-                transform: translateX(100%); z-index: 5;
-            }
-            .nav-links.active { transform: translateX(0); }
-            .btn { width: 100%; margin-right: 0; }
-        }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: var(--text-main); margin: 0; padding: 20px; }
+        .step-content { display: none; max-width: 600px; margin: 0 auto; }
+        .step-content.active { display: block; }
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #4a5568; color: white; }
+        .color-palette { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .swatch { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #fff; }
+        .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .analysis-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid #2d3748; }
+        .analysis-card h4 { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--text-secondary); }
+        .analysis-card p { margin: 0; font-weight: bold; }
+        #result-preview { width: 100%; border-radius: 8px; margin-bottom: 20px; border: 1px solid #2d3748; }
     </style>
 </head>
 <body>
-    <nav>
-        <a class='brand-container' href='/'>
-            <span class="brand-name">VCTO</span>
-            <span class="brand-subtitle">Virtual Clothes Try-On</span>
-        </a>
-        <div class="menu-icon" id="menu-icon" onclick="toggleMenu()">☰</div>
-        <div class="nav-links" id="nav-links">
-            <div style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer; display:none;" id="close-menu" onclick="toggleMenu()">✕</div>
-            <a class="nav-link" href="index.html">Home</a>
-            <a class="nav-link" href="simulator.html">Simulator</a>
-            <a class="nav-link" href="faq.html">FAQ</a>
-            <a class="nav-link" href="signup.html" id="nav-auth-link">Sign Up / Log In</a>
-        </div>
-    </nav>
 
-    <div class="stepper-wrapper">
-        <div class="stepper">
-            <div class="step-dot active" id="dot-1">1</div><div class="step-dot" id="dot-2">2</div><div class="step-dot" id="dot-3">3</div>
-            <div class="step-dot" id="dot-4">4</div><div class="step-dot" id="dot-5">5</div><div class="step-dot" id="dot-6">6</div>
-            <div class="step-dot" id="dot-7">7</div><div class="step-dot" id="dot-8">8</div><div class="step-dot" id="dot-9">9</div>
+    <div id="step-5" class="step-content active">
+        <h2>Step 5: Analysis Complete</h2>
+        <img id="result-preview" src="girl.jpeg" alt="Analyzing...">
+        
+        <div style="background: var(--card-bg); padding:1.5rem; border-radius:12px;">
+            <div style="margin-bottom:15px; border-bottom:1px solid #2d3748; padding-bottom:10px;">
+                <h3 style="color:var(--primary); margin-bottom: 5px;" id="season-result">Detecting...</h3>
+                <p id="subseason-traits" style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;"></p>
+            </div>
+            
+            <h3 style="margin-bottom:10px; font-size: 1.1em;">Your Recommended Palette:</h3>
+            <div class="color-palette" id="color-palette-display"></div>
         </div>
+        
+        <div class="analysis-grid" id="analysis-cards-container">
+            </div>
+
+        <div id="full-description" style="margin-top:20px; line-height:1.6; color: var(--text-secondary);"></div>
+
+        <br>
+        <button class="btn btn-secondary" onclick="alert('Going Back...')">← Retake</button>
+        <button class="btn btn-primary" onclick="alert('Saving results...')">Save Profile →</button>
     </div>
 
-    <div class="container">
-        <div id="step-1" class="step-content active">
-            <h2>Step 1: Upload Your Photo</h2>
-            <p class="desc">Use a front-facing photo with neutral lighting.</p>
-            <div class="upload-box" onclick="triggerUpload('user-upload')">
-                <span style="font-size:2rem">📸</span><br>
-                <p id="user-upload-text">Click to Upload User Image</p>
-                <input type="file" id="user-upload" accept="image/*" hidden onchange="handleUserSelect()">
-            </div>
-            <div id="user-file-list" style="margin-top: 10px;"></div>
-            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="window.location.href='index.html'">← Home</button>
-            <button class="btn btn-primary" id="btn-step-1" onclick="nextStep(2)" disabled>Next Step →</button>
-        </div>
-
-        <div id="step-2" class="step-content">
-            <h2>Step 2: Body Measurements</h2>
-            <p class="desc">How should we determine your size?</p>
-            <div class="option-card" onclick="selectMeasure('ai')"><strong>AI Estimation</strong> (Auto)</div>
-            <div class="option-card" onclick="selectMeasure('manual')"><strong>Manual Entry</strong></div>
-            <br><button class="btn btn-secondary" onclick="prevStep(1)">← Back</button>
-            <button class="btn btn-primary" id="btn-step-2" onclick="nextStep(3)">Next Step →</button>
-        </div>
-
-        <div id="step-3" class="step-content">
-            <h2>Step 3: Upload Clothing</h2>
-            <p class="desc">Upload one or more items to try on.</p>
-            <div class="upload-box" onclick="triggerUpload('cloth-upload')">
-                <span style="font-size:2rem">👕</span><br>
-                <p>Click to Add Clothing Image(s)</p>
-                <input type="file" id="cloth-upload" accept="image/*" multiple hidden onchange="handleClothSelect()">
-            </div>
-            <div id="cloth-file-list" style="margin-top: 10px;"></div>
-            <br><button class="btn btn-secondary" onclick="prevStep(2)">← Back</button>
-            <button class="btn btn-primary" id="btn-step-3" onclick="processAnalysis()" disabled>Analyze My Look →</button>
-        </div>
-
-        <div id="step-4" class="step-content">
-            <h2 style="text-align:center">Processing...</h2>
-            <div style="text-align:center; margin: 3rem 0;"><div style="font-size:3rem; animation: spin 1s infinite linear;">⚙️</div></div>
-            <p style="text-align:center; color: var(--text-secondary);">Analyzing your color profile using strict rules...</p>
-        </div>
-
-        <div id="step-5" class="step-content">
-            <h2>Step 5: Analysis Complete</h2>
-            <div style="background:#000; height:250px; border-radius:8px; display:flex; align-items:center; justify-content:center; border:1px solid #2d3748; margin-bottom: 2rem;">Result Image</div>
-            <div style="background: var(--card-bg); padding:1.5rem; border-radius:12px;">
-                <div style="margin-bottom:15px; border-bottom:1px solid #2d3748; padding-bottom:10px;">
-                    <h3 style="color:#6366f1;" id="season-result">Detecting...</h3>
-                </div>
-                <h3 style="margin-bottom:10px; font-size: 1.17em;">Your Recommended Palette:</h3>
-                <div class="color-palette" id="color-palette-display"></div>
-            </div>
-            <br><button class="btn btn-secondary" onclick="prevStep(3)">← Back</button>
-            <button class="btn btn-primary" onclick="nextStep(6)">Next Step →</button>
-        </div>
-
-        <div id="step-6" class="step-content">
-            <h2>Step 6: Smart Recommendations</h2>
-            <p class="desc">View this item in colors curated for your profile.</p>
-            <button class="btn btn-primary" onclick="nextStep(7)">Show Variants</button>
-            <button class="btn btn-secondary" onclick="nextStep(8)">Skip</button>
-        </div>
-
-        <div id="step-7" class="step-content">
-            <h2>Step 7: Your Generated Looks</h2>
-            <div class="results-grid" id="variants-grid"></div>
-            <button class="btn btn-primary" onclick="nextStep(8)">Understand My Results →</button>
-        </div>
-
-        <div id="step-8" class="step-content">
-            <h2>Understanding Your Color Palette</h2>
-            <p class="desc">A detailed breakdown of your unique color profile.</p>
-            <div class="analysis-grid" id="analysis-cards-container"></div>
-            <div class="analysis-card" id="full-picture-card"></div>
-            <br>
-            <button class="btn btn-secondary" onclick="prevStep(7)">← Back</button>
-            <button class="btn btn-primary" onclick="nextStep(9)">Finish</button>
-        </div>
-
-        <div id="step-9" class="step-content" style="text-align:center;">
-            <h2>Try-On Complete!</h2>
-            <button class="btn btn-primary" onclick="location.reload()">Start New Session</button>
-        </div>
-    </div>
-
-    <script>
-        // --- DATA & LOGIC ---
-        const colorLogic = {
-            "Deep Winter": { undertone: "Cool", contrast: "High", characteristics: "Dark & Cool", palette: ["#1D1D1B", "#FFFFFF", "#0047AB", "#800020", "#4B0082"], description: "Primary trait: Depth. You need high-contrast jewel tones." },
-            "True Winter": { undertone: "Cool", contrast: "Very High", characteristics: "Vivid & Chilly", palette: ["#000000", "#FFFFFF", "#FF0000", "#0000FF", "#008080"], description: "Primary trait: Coolness. Pure, icy primary colors look best." },
-            "Bright Winter": { undertone: "Neutral-Cool", contrast: "Highest", characteristics: "Striking & Electric", palette: ["#000000", "#FBEE0F", "#FF00FF", "#00FFFF", "#7FFF00"], description: "Primary trait: Clarity. You need electric saturation." },
-            "Deep Autumn": { undertone: "Neutral-Warm", contrast: "Medium-High", characteristics: "Dark & Rich", palette: ["#4B2C20", "#8B4513", "#556B2F", "#DAA520", "#2F4F4F"], description: "Primary trait: Depth. Rich, earthy colors with golden warmth." },
-            "True Autumn": { undertone: "Warm", contrast: "Medium", characteristics: "Golden & Spiced", palette: ["#D2691E", "#CD853F", "#808000", "#A0522D", "#B22222"], description: "Primary trait: Warmth. Think forest floor—golden and glowing." },
-            "Soft Autumn": { undertone: "Neutral-Warm", contrast: "Low-Medium", characteristics: "Muted & Gentle", palette: ["#BC8F8F", "#8E7618", "#778899", "#A0522D", "#6B8E23"], description: "Primary trait: Softness. Dusty colors with a hint of gold." },
-            "Bright Spring": { undertone: "Neutral-Warm", contrast: "High", characteristics: "Lively & Vibrant", palette: ["#FF4500", "#FFD700", "#00FF7F", "#FF1493", "#00CED1"], description: "Primary trait: Clarity. Saturated, tropical garden colors." },
-            "True Spring": { undertone: "Warm", contrast: "Medium-High", characteristics: "Sunny & Warm", palette: ["#FFA500", "#FFD700", "#ADFF2F", "#F08080", "#20B2AA"], description: "Primary trait: Warmth. Clear, light-filled colors." },
-            "Light Spring": { undertone: "Neutral-Warm", contrast: "Low", characteristics: "Pale & Bright", palette: ["#FFFACD", "#E0FFFF", "#FFB6C1", "#98FB98", "#FFA07A"], description: "Primary trait: Lightness. Peach and aqua pastels." },
-            "Light Summer": { undertone: "Neutral-Cool", contrast: "Low", characteristics: "Pale & Cool", palette: ["#F0F8FF", "#FFC0CB", "#B0E0E6", "#D8BFD8", "#AFEEEE"], description: "Primary trait: Lightness. Delicate, airy, cool pastels." },
-            "True Summer": { undertone: "Cool", contrast: "Medium-Low", characteristics: "Soft & Chilly", palette: ["#708090", "#957DAD", "#4A69BD", "#E090AD", "#576574"], description: "Primary trait: Coolness. Refreshing, watery, blue-based tones." },
-            "Soft Summer": { undertone: "Neutral-Cool", contrast: "Low", characteristics: "Muted & Smokey", palette: ["#696969", "#778899", "#BC8F8F", "#483D8B", "#2F4F4F"], description: "Primary trait: Softness. Muted charcoal and lavender." }
-        };
-
-        let currentStep = 1;
-
-        function triggerUpload(id) { document.getElementById(id).click(); }
-
-        function handleUserSelect() {
-            const input = document.getElementById('user-upload');
-            if (input.files[0]) {
-                document.getElementById('user-file-list').innerHTML = `<div class="file-item">📸 ${input.files[0].name}</div>`;
-                document.getElementById('btn-step-1').disabled = false;
-            }
+<script>
+    const colorLogic = {
+        "Deep Winter": {
+            subseason: "Deep", season: "Winter", undertone: "Cool", contrast: "High",
+            characteristics: "Dark, Cool & Clear",
+            palette: ["#1D1D1B", "#FFFFFF", "#4A0E0E", "#002366", "#C0C0C0"],
+            bestMetals: "Silver, Platinum", avoid: "Earth tones, Mustard",
+            description: "Your primary trait is Depth. You need high-contrast jewel tones and stark black-and-white combinations."
+        },
+        "True Winter": {
+            subseason: "True", season: "Winter", undertone: "Strictly Cool", contrast: "Very High",
+            characteristics: "Vivid, Chilly & Clear",
+            palette: ["#000000", "#F5F5F5", "#D70270", "#0000FF", "#008080"],
+            bestMetals: "High-shine Silver", avoid: "Orange, Gold",
+            description: "Your primary trait is Coolness. You are the 'icy' winter. Pure, blue-based primary colors look best."
+        },
+        "Deep Autumn": {
+            subseason: "Deep", season: "Autumn", undertone: "Neutral-Warm", contrast: "High",
+            characteristics: "Dark, Rich & Earthy",
+            palette: ["#3D2B1F", "#F5F5DC", "#800000", "#556B2F", "#DAA520"],
+            bestMetals: "Antique Gold, Bronze", avoid: "Icy Pastels, Cool Blues",
+            description: "Your primary trait is Depth. Rich, heavy, and saturated earthy colors make your features pop."
         }
+        // ... include other seasons here
+    };
 
-        function handleClothSelect() {
-            const input = document.getElementById('cloth-upload');
-            if (input.files.length > 0) {
-                document.getElementById('cloth-file-list').innerHTML = `<div class="file-item">👕 ${input.files.length} Item(s) Uploaded</div>`;
-                document.getElementById('btn-step-3').disabled = false;
-            }
-        }
+    function runAnalysis() {
+        // Strict Analysis Logic: 
+        // Based on the provided image (dark hair, cool skin, high contrast)
+        // We will simulate the detection of "Deep Winter"
+        const detectedSubseason = "Deep Winter"; 
+        const data = colorLogic[detectedSubseason];
 
-        function processAnalysis() {
-            nextStep(4);
-            // Simulate AI Processing time
-            setTimeout(() => {
-                applyStrictAnalysis("True Autumn"); // Default example, logic can be tied to AI result
-                nextStep(5);
-            }, 2500);
-        }
+        // 1. Update Headers (Subseason + Season)
+        document.getElementById('season-result').innerText = `${data.subseason} ${data.season}`;
+        document.getElementById('subseason-traits').innerText = data.characteristics;
 
-        function applyStrictAnalysis(subseasonKey) {
-            const data = colorLogic[subseasonKey];
-            if (!data) return;
+        // 2. Generate Palette Swatches
+        const paletteContainer = document.getElementById('color-palette-display');
+        paletteContainer.innerHTML = data.palette.map(color => 
+            `<div class="swatch" style="background: ${color}"></div>`
+        ).join('');
 
-            // Step 5 Updates
-            document.getElementById('season-result').innerText = subseasonKey;
-            const swatchContainer = document.getElementById('color-palette-display');
-            swatchContainer.innerHTML = '';
-            data.palette.forEach(color => {
-                swatchContainer.innerHTML += `<div class="swatch" style="background: ${color}"></div>`;
-            });
+        // 3. Generate Extensive Analysis Cards
+        const cardsContainer = document.getElementById('analysis-cards-container');
+        cardsContainer.innerHTML = `
+            <div class="analysis-card"><h4>Undertone</h4><p>${data.undertone}</p></div>
+            <div class="analysis-card"><h4>Contrast</h4><p>${data.contrast}</p></div>
+            <div class="analysis-card"><h4>Best Metals</h4><p>${data.bestMetals}</p></div>
+            <div class="analysis-card"><h4>Avoid</h4><p>${data.avoid}</p></div>
+        `;
 
-            // Step 8 Updates
-            document.getElementById('analysis-cards-container').innerHTML = `
-                <div class="analysis-card"><div>🌡️</div><h4>Undertone</h4><p>${data.undertone}</p></div>
-                <div class="analysis-card"><div>🌓</div><h4>Contrast</h4><p>${data.contrast}</p></div>
-                <div class="analysis-card"><div>✨</div><h4>Key Trait</h4><p>${data.characteristics}</p></div>
-            `;
-            document.getElementById('full-picture-card').innerHTML = `
-                <h3 style="color:#6366f1;">The Logic Behind ${subseasonKey}</h3>
-                <p>${data.description}</p>
-            `;
-        }
+        // 4. Update Detailed Text
+        document.getElementById('full-description').innerHTML = `
+            <strong style="color:white">Why ${detectedSubseason}?</strong><br>
+            ${data.description}
+        `;
+    }
 
-        function nextStep(step) {
-            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
-            document.getElementById(`step-${step}`).classList.add('active');
-            updateStepper(step);
-        }
+    // Run on load
+    window.onload = runAnalysis;
+</script>
 
-        function prevStep(step) { nextStep(step); }
-
-        function updateStepper(step) {
-            document.querySelectorAll('.step-dot').forEach((dot, i) => {
-                dot.classList.remove('active', 'completed');
-                if (i + 1 === step) dot.classList.add('active');
-                if (i + 1 < step) dot.classList.add('completed');
-            });
-        }
-
-        function toggleMenu() {
-            document.getElementById('nav-links').classList.toggle('active');
-        }
-    </script>
 </body>
 </html>
