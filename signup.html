@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Access | VCTO</title>
+    <style>
+        /* --- GLOBAL THEME --- */
+        :root { --bg-color: #0b0c15; --card-bg: #161b2c; --text-primary: #ffffff; --text-secondary: #a0aec0; --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); --accent-color: #6366f1; --border-color: #2d3748; --error-color: #ef4444; }
+        body { background-color: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* --- NAVIGATION --- */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); position: relative; }
+        .brand-container { display: flex; flex-direction: column; text-decoration: none; z-index: 10; }
+        .brand-name { font-size: 2rem; font-weight: 900; letter-spacing: 1px; color: white; line-height: 1; }
+        .brand-subtitle { font-size: 0.75rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; font-weight: 600; }
+        
+        .nav-links { display: flex; gap: 2rem; transition: all 0.3s ease; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: color 0.3s; white-space: nowrap; } 
+        .nav-link:hover { color: white; }
+        
+        .menu-icon { display: none; font-size: 1.8rem; color: white; cursor: pointer; z-index: 10; }
+
+        /* --- AUTH CONTAINER --- */
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 2rem; }
+        .auth-card { background-color: var(--card-bg); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); width: 100%; max-width: 400px; border: 1px solid var(--border-color); }
+
+        /* --- TABS & FORMS --- */
+        .auth-tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
+        .tab-btn { flex: 1; padding: 1rem; background: none; border: none; color: var(--text-secondary); font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
+        .tab-btn.active { color: white; border-bottom: 2px solid var(--accent-color); margin-bottom: -2px; }
+        .form-section { display: none; animation: fadeIn 0.3s ease; }
+        .form-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .input-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; background-color: #0b0c15; border: 2px solid var(--border-color); border-radius: 8px; color: white; font-size: 1rem; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
+        input:focus { border-color: var(--accent-color); }
+        .submit-btn { width: 100%; padding: 14px; background: var(--accent-gradient); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 1rem; transition: opacity 0.2s; }
+        .submit-btn:hover { opacity: 0.9; }
+        .forgot-link { display: block; text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem; text-decoration: none; cursor: pointer; }
+        .forgot-link:hover { color: var(--accent-color); }
+        .error-msg { color: var(--error-color); font-size: 0.9rem; margin-bottom: 1rem; display: none; text-align: center; }
+
+        @media (max-width: 768px) {
+            nav { padding: 1.5rem; }
+            .menu-icon { display: block; }
+            .nav-links { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-color); flex-direction: column; justify-content: center; align-items: center; gap: 2.5rem; transform: translateX(100%); z-index: 5; }
+            .nav-links.active { transform: translateX(0); }
+            .nav-link { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a class='brand-container' href='/'>
+            <span class="brand-name">VCTO</span>
+            <span class="brand-subtitle">Virtual Clothes Try-On</span>
+        </a>
+        
+        <div class="menu-icon" id="menu-icon" onclick="toggleMenu()">☰</div>
+
+        <div class="nav-links" id="nav-links">
+            <div style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer; display:none;" id="close-menu" onclick="toggleMenu()">✕</div>
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="simulator.html">Simulator</a>
+            <a class="nav-link" href="faq.html">FAQ</a>
+            <a class="nav-link" href="signup.html" style="color:white" id="nav-auth-link">Sign Up / Log In</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <div id="login-section" class="form-section active">
+                <h2 style="text-align:center; margin-bottom:1.5rem;">Welcome Back</h2>
+                <div id="login-error" class="error-msg"></div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" required placeholder="you@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-pass" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="submit-btn">Log In</button>
+                </form>
+                <a onclick="forgotPassword()" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <div id="signup-section" class="form-section">
+                <h2 style="text-align:center; margin-bottom:1.5rem;">Create Account</h2>
+                <div id="signup-error" class="error-msg"></div>
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signup-email" required placeholder="you@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-pass" required placeholder="••••••••">
+                    </div>
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="signup-confirm" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('currentUser')) { window.location.href = 'dashboard.html'; }
+
+        function toggleMenu() {
+            const nav = document.getElementById('nav-links');
+            const icon = document.getElementById('menu-icon');
+            nav.classList.toggle('active');
+            if(nav.classList.contains('active')) {
+                icon.style.display = 'none';
+                document.getElementById('close-menu').style.display = 'block';
+            } else {
+                icon.style.display = 'block';
+                document.getElementById('close-menu').style.display = 'none';
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.error-msg').forEach(e => e.style.display = 'none');
+            if (tab === 'login') {
+                document.getElementById('login-section').classList.add('active');
+                document.getElementById('signup-section').classList.remove('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+            } else {
+                document.getElementById('login-section').classList.remove('active');
+                document.getElementById('signup-section').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            }
+        }
+
+        // LOGIN LOGIC
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.toLowerCase();
+            const pass = document.getElementById('login-pass').value;
+            const errorBox = document.getElementById('login-error');
+            let userDB = JSON.parse(localStorage.getItem('userDB')) || {};
+            
+            if (userDB[email] && userDB[email].password === pass) { 
+                loginUser(email); 
+            } else { 
+                errorBox.innerText = "Invalid email or password."; 
+                errorBox.style.display = 'block'; 
+            }
+        });
+
+        // SIGN UP LOGIC
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value.toLowerCase();
+            const pass = document.getElementById('signup-pass').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const errorBox = document.getElementById('signup-error');
+            const loginErrorBox = document.getElementById('login-error'); // To show message in login tab
+
+            if (pass !== confirm) { 
+                errorBox.innerText = "Passwords do not match."; 
+                errorBox.style.display = 'block'; 
+                return; 
+            }
+            
+            let userDB = JSON.parse(localStorage.getItem('userDB')) || {};
+            
+            // --- NEW ACCOUNT EXISTS LOGIC ---
+            if (userDB[email]) { 
+                // 1. Switch Tab
+                switchTab('login'); 
+                // 2. Pre-fill Email
+                document.getElementById('login-email').value = email; 
+                // 3. Show On-Screen Error
+                loginErrorBox.innerText = "Account already exists. Please Log In.";
+                loginErrorBox.style.display = 'block';
+                return; 
+            }
+
+            // Create New Account
+            userDB[email] = { password: pass, joined: new Date() };
+            localStorage.setItem('userDB', JSON.stringify(userDB));
+            loginUser(email);
+        });
+
+        function loginUser(email) {
+            const session = { email: email, loginTime: new Date().toISOString() };
+            localStorage.setItem('currentUser', JSON.stringify(session));
+            const btn = document.querySelector('.form-section.active .submit-btn');
+            btn.innerText = "Redirecting...";
+            btn.style.background = "#10b981";
+            setTimeout(() => { window.location.href = "dashboard.html"; }, 500);
+        }
+
+        // --- NEW FORGOT PASSWORD LOGIC ---
+        function forgotPassword() { 
+            const emailInput = prompt("Enter email for reset link:"); 
+            
+            // Only show alert if user typed something AND pressed OK
+            if (emailInput !== null && emailInput.trim() !== "") {
+                alert("Reset link has been sent. Please check your inbox.");
+            }
+            // If they click Cancel (null) or leave it empty, nothing happens.
+        }
+    </script>
+</body>
+</html>
