@@ -1375,7 +1375,7 @@ Return fits: true if the clothing's dominant colors match or complement the pale
         // --- UPDATE UI WITH RESULTS ---
         function updateStep5WithResults() {
             // Update season display to "Undertone Season" format (e.g., "Warm Autumn")
-            const seasonText = `${analysisResults.undertone} ${analysisResults.season}`;
+            const seasonText = `${analysisResults.subseason} ${analysisResults.season}`;
             document.getElementById('season-result').innerText = seasonText;
 
             // Show clothing fit message
