@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCTO | Virtual Clothes Try-On</title>
+    <style>
+        /* --- GLOBAL THEME --- */
+        :root { --bg-color: #0b0c15; --card-bg: #161b2c; --text-primary: #ffffff; --text-secondary: #a0aec0; --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); --accent-color: #6366f1; --border-color: #2d3748; }
+        body { background-color: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* --- NAVIGATION --- */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; border-bottom: 1px solid var(--border-color); position: relative; }
+        .brand-container { display: flex; flex-direction: column; text-decoration: none; z-index: 10; }
+        .brand-name { font-size: 2rem; font-weight: 900; letter-spacing: 1px; color: white; line-height: 1; }
+        .brand-subtitle { font-size: 0.75rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; font-weight: 600; }
+        .nav-links { display: flex; gap: 2rem; transition: all 0.3s ease; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 1rem; transition: color 0.3s; }
+        .nav-link:hover { color: white; }
+        .menu-icon { display: none; font-size: 1.8rem; color: white; cursor: pointer; z-index: 10; }
+
+        /* --- HERO SECTION --- */
+        .hero { text-align: center; padding: 8rem 1rem 5rem 1rem; width: 100%; max-width: 1400px; margin: 0 auto; box-sizing: border-box; }
+        h1 { font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; white-space: normal; }
+        .hero p { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 3rem; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        .cta-button { display: inline-block; padding: 18px 48px; background: var(--accent-gradient); color: white; text-decoration: none; border-radius: 50px; font-size: 1.2rem; font-weight: 700; box-shadow: 0 0 25px rgba(99, 102, 241, 0.4); transition: transform 0.2s, box-shadow 0.2s; }
+        .cta-button:hover { transform: scale(1.05); box-shadow: 0 0 35px rgba(99, 102, 241, 0.6); }
+
+        /* --- FEATURES GRID --- */
+        .features-container { max-width: 1100px; margin: 0 auto 6rem auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .feature-card { background-color: var(--card-bg); padding: 2.5rem; border-radius: 16px; border: 1px solid var(--border-color); transition: transform 0.3s ease, border-color 0.3s ease; text-align: center; }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--accent-color); }
+        .icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+        .feature-card h3 { font-size: 1.4rem; margin-bottom: 1rem; font-weight: 700; }
+        .feature-card p { color: var(--text-secondary); line-height: 1.6; font-size: 1rem; }
+
+        /* --- CUSTOM BREAK FOR MOBILE --- */
+        .mobile-break { display: none; }
+
+        /* --- MOBILE MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            nav { padding: 1.5rem; }
+            .menu-icon { display: block; }
+            .nav-links { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-color); flex-direction: column; justify-content: center; align-items: center; gap: 2.5rem; transform: translateX(100%); z-index: 5; }
+            .nav-links.active { transform: translateX(0); }
+            .nav-link { font-size: 1.5rem; }
+            h1 { font-size: 2.5rem; white-space: normal; }
+            .hero { padding: 5rem 1rem 3rem 1rem; }
+            .features-container { grid-template-columns: 1fr; gap: 1.5rem; }
+            
+            /* ACTIVATE CUSTOM BREAKS ON MOBILE */
+            .mobile-break { display: inline; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a class="brand-container" href="index.html">
+            <span class="brand-name">VCTO</span>
+            <span class="brand-subtitle">Virtual Clothes Try-On</span>
+        </a>
+        
+        <div class="menu-icon" id="menu-icon" onclick="toggleMenu()">☰</div>
+
+        <div class="nav-links" id="nav-links">
+            <div style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer; display:none;" id="close-menu" onclick="toggleMenu()">✕</div>
+            <a class="nav-link" href="index.html" style='color: white;'>Home</a>
+            <a class="nav-link" href="simulator.html">Simulator</a>
+            <a class="nav-link" href="faq.html">FAQ</a>
+            <a class="nav-link" href="signup.html" id='auth-link'>Sign Up / Log In</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Experience Fashion Virtually</h1>
+        <p>
+            Upload your photo, try on any outfit,<br class="mobile-break">
+            and discover your perfect<br class="mobile-break">
+            color palette with our<br class="mobile-break">
+            AI-powered stylist.
+        </p>
+        <a class="cta-button" href="simulator.html">Try Our Simulator</a>
+    </div>
+
+    <div class="features-container">
+        <div class="feature-card"><span class="icon">📸</span><h3>Upload Photo</h3><p>Use your own photo for a realistic fitting experience. We ensure your data is processed securely.</p></div>
+        <div class="feature-card"><span class="icon">📏</span><h3>AI Measurements</h3><p>Our AI estimates your body measurements automatically to ensure the clothing fits your frame perfectly.</p></div>
+        <div class="feature-card"><span class="icon">🎨</span><h3>Color Analysis</h3><p>Discover which seasons and palettes suit you best with our integrated color theory algorithms.</p></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const user = localStorage.getItem('currentUser');
+            const authLink = document.getElementById('auth-link');
+            if (user) { authLink.innerText = "Account"; authLink.href = "dashboard.html"; } 
+            else { authLink.innerText = "Sign Up / Log In"; authLink.href = "signup.html"; }
+        });
+
+        function toggleMenu() {
+            const nav = document.getElementById('nav-links');
+            const icon = document.getElementById('menu-icon');
+            nav.classList.toggle('active');
+            
+            // Hide hamburger when active
+            if(nav.classList.contains('active')) {
+                icon.style.display = 'none';
+                document.getElementById('close-menu').style.display = 'block';
+            } else {
+                icon.style.display = 'block';
+                document.getElementById('close-menu').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

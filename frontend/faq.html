@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | VCTO</title>
+    <style>
+        /* --- GLOBAL THEME --- */
+        :root {
+            --bg-color: #0b0c15;
+            --card-bg: #161b2c;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --accent-color: #6366f1;
+            --border-color: #2d3748;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            position: relative;
+        }
+        .brand-container { display: flex; flex-direction: column; text-decoration: none; z-index: 10; }
+        .brand-name { font-size: 2rem; font-weight: 900; letter-spacing: 1px; color: white; line-height: 1; }
+        .brand-subtitle { font-size: 0.75rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; font-weight: 600; }
+        
+        .nav-links { display: flex; gap: 2rem; transition: all 0.3s ease; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .nav-link:hover { color: white; }
+
+        /* HAMBURGER MENU ICON (Hidden on Desktop) */
+        .menu-icon { display: none; font-size: 1.8rem; color: white; cursor: pointer; z-index: 10; }
+
+        /* --- FAQ CONTAINER --- */
+        .faq-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 20px 6rem 20px;
+            flex: 1;
+            width: 100%; /* Ensures container uses full available space */
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        p.intro {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 4rem;
+        }
+
+        /* Category Headers */
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* --- ACCORDION STYLES --- */
+        details {
+            background-color: var(--card-bg);
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            
+            /* STABILIZATION FIXES */
+            width: 100%; /* Forces the box to stay full width */
+            box-sizing: border-box; /* Includes padding in width calculation */
+            
+            /* Reverted min-height so they look compact again */
+        }
+
+        details:hover {
+            border-color: var(--accent-color);
+        }
+
+        summary {
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Plus icon */
+        summary::after { 
+            content: '+'; 
+            font-size: 1.5rem; 
+            color: var(--accent-color); 
+            transition: transform 0.2s; 
+        }
+        
+        /* Rotate to X when open */
+        details[open] summary::after { 
+            transform: rotate(45deg); 
+        }
+
+        .answer {
+            /* Vertical spacing, Left alignment */
+            text-align: left; 
+            padding: 10px 1.5rem 1.5rem 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Contact Box at bottom */
+        .contact-box {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            border: 1px solid var(--accent-color);
+        }
+
+        /* --- MOBILE MEDIA QUERY --- */
+        @media (max-width: 768px) {
+            nav { padding: 1.5rem 1.5rem; }
+            .menu-icon { display: block; }
+            
+            /* Mobile Nav Drawer */
+            .nav-links {
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background-color: var(--bg-color);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2.5rem;
+                transform: translateX(100%);
+                z-index: 5;
+            }
+            .nav-links.active { transform: translateX(0); }
+            .nav-link { font-size: 1.5rem; }
+
+            /* FAQ Adjustments */
+            h1 { font-size: 2rem; }
+            .faq-container { padding: 2rem 1.5rem 6rem 1.5rem; margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a class='brand-container' href='/'>
+            <span class="brand-name">VCTO</span>
+            <span class="brand-subtitle">Virtual Clothes Try-On</span>
+        </a>
+
+        <div class="menu-icon" id="menu-icon" onclick="toggleMenu()">☰</div>
+
+        <div class="nav-links" id="nav-links">
+            <div style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer; display:none;" id="close-menu" onclick="toggleMenu()">✕</div>
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="simulator.html">Simulator</a>
+            <a class="nav-link" href="faq.html" style="color:white">FAQ</a>
+            <a class="nav-link" href="signup.html" id="nav-auth-link">Sign Up / Log In</a>
+
+        </div>
+    </nav>
+
+    <div class="faq-container">
+        <h1>Frequently Asked Questions</h1>
+        <p class="intro">Everything you need to know about using the VCTO platform.</p>
+
+        <h2>General Information</h2>
+        
+        <details>
+            <summary>What is VCTO?</summary>
+            <div class="answer">
+                VCTO (Virtual Clothes Try-On) is an AI-powered tool that allows you to see how clothing will look on your specific body type. By uploading a photo of yourself and a photo of a clothing item, our system digitally maps the fabric onto your body.
+            </div>
+        </details>
+
+        <details>
+            <summary>Is the service free to use?</summary>
+            <div class="answer">
+                Yes! The core simulator is completely free. You can generate outfits, view color analysis, and download your results without paying. We may introduce premium features for high-definition rendering in the future.
+            </div>
+        </details>
+
+        <details>
+            <summary>Do I need an account to use it?</summary>
+            <div class="answer">
+                No. You can use the simulator as a "Guest" immediately. However, creating an account allows you to <strong>save your generated outfits</strong> to a dashboard, track your history, and manage your wardrobe.
+            </div>
+        </details>
+
+        <h2>Technical Support & Usage</h2>
+
+        <details>
+            <summary>What kind of photo should I upload?</summary>
+            <div class="answer">
+                For the best results:
+                <ul>
+                    <li>Use a <strong>full-body</strong> or <strong>half-body</strong> shot.</li>
+                    <li>Ensure you are facing forward.</li>
+                    <li>Wear tight-fitting clothes (like gym wear) so the AI can accurately detect your body shape.</li>
+                    <li>Avoid busy backgrounds and poor lighting.</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>Why does the clothing look distorted?</summary>
+            <div class="answer">
+                Distortion usually happens if the uploaded clothing image is wrinkled, folded, or taken at an extreme angle. Try to use flat-lay images (clothing laid flat on a surface) or clean product photos from a store website.
+            </div>
+        </details>
+
+        <details>
+            <summary>How accurate are the body measurements?</summary>
+            <div class="answer">
+                Our AI estimation is generally accurate within 1-2 inches. However, for precise fitting, we highly recommend using the <strong>Manual Entry</strong> option in Step 2 to input your exact measurements.
+            </div>
+        </details>
+
+        <details>
+            <summary>What file formats are supported?</summary>
+            <div class="answer">
+                We currently support <strong>JPG, PNG, and WEBP</strong> formats. The maximum file size per upload is 10MB.
+            </div>
+        </details>
+
+        <h2>Privacy & Security</h2>
+
+        <details>
+            <summary>Is my photo private?</summary>
+            <div class="answer">
+                Absolutely. If you use Guest Mode, your images are processed in real-time and deleted from our servers shortly after generation. If you have an account, images are stored securely in your private gallery until you choose to delete them.
+            </div>
+        </details>
+
+        <details>
+            <summary>Do you sell user data?</summary>
+            <div class="answer">
+                Never. Your biometric data (body measurements) and photos are used strictly for the purpose of generating the virtual try-on simulation. We do not share or sell this data to third-party advertisers.
+            </div>
+        </details>
+
+        <div class="contact-box">
+            <h3>Still have questions?</h3>
+            <p style="color:var(--text-secondary)">We are here to help. Reach out to our support team.</p>
+            <button onclick="alert('Support email: help@vcto.ai')" style="background:var(--accent-gradient); border:none; color:white; padding:12px 24px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px;">Contact Support</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. LOGIN STATUS CHECK ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const user = localStorage.getItem('currentUser');
+            const navLink = document.getElementById('nav-auth-link');
+
+            if (user) {
+                // User IS logged in
+                navLink.innerText = "Account";
+                navLink.href = "dashboard.html";
+            } else {
+                // User is NOT logged in (Default State)
+                navLink.innerText = "Sign Up / Log In";
+                navLink.href = "signup.html";
+            }
+        });
+
+        // --- 2. MOBILE MENU TOGGLE ---
+        function toggleMenu() {
+            const nav = document.getElementById('nav-links');
+            const icon = document.getElementById('menu-icon');
+            nav.classList.toggle('active');
+            
+            if(nav.classList.contains('active')) {
+                icon.style.display = 'none';
+                document.getElementById('close-menu').style.display = 'block';
+            } else {
+                icon.style.display = 'block';
+                document.getElementById('close-menu').style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>
