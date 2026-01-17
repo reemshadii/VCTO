@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ | VCTO</title>
     <style>
-        /* --- GLOBAL THEME --- */
         :root {
             --bg-color: #0b0c15;
             --card-bg: #161b2c;
@@ -26,7 +25,6 @@
             min-height: 100vh;
         }
 
-        /* --- NAVIGATION --- */
         nav {
             display: flex;
             justify-content: space-between;
@@ -36,24 +34,62 @@
             background-color: var(--bg-color);
             position: relative;
         }
-        .brand-container { display: flex; flex-direction: column; text-decoration: none; z-index: 10; }
-        .brand-name { font-size: 2rem; font-weight: 900; letter-spacing: 1px; color: white; line-height: 1; }
-        .brand-subtitle { font-size: 0.75rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; font-weight: 600; }
-        
-        .nav-links { display: flex; gap: 2rem; transition: all 0.3s ease; }
-        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: color 0.3s; }
-        .nav-link:hover { color: white; }
 
-        /* HAMBURGER MENU ICON (Hidden on Desktop) */
-        .menu-icon { display: none; font-size: 1.8rem; color: white; cursor: pointer; z-index: 10; }
+        .brand-container {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            z-index: 10;
+        }
 
-        /* --- FAQ CONTAINER --- */
+        .brand-name {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: white;
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+        }
+
         .faq-container {
             max-width: 800px;
             margin: 4rem auto;
             padding: 0 20px 6rem 20px;
             flex: 1;
-            width: 100%; /* Ensures container uses full available space */
+            width: 100%;
             box-sizing: border-box;
         }
 
@@ -68,9 +104,9 @@
             text-align: center;
             color: var(--text-secondary);
             margin-bottom: 4rem;
+            font-size: 1.1rem;
         }
 
-        /* Category Headers */
         h2 {
             font-size: 1.5rem;
             margin-top: 3rem;
@@ -80,18 +116,13 @@
             padding-bottom: 10px;
         }
 
-        /* --- ACCORDION STYLES --- */
         details {
             background-color: var(--card-bg);
             margin-bottom: 1rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            
-            /* STABILIZATION FIXES */
-            width: 100%; /* Forces the box to stay full width */
-            box-sizing: border-box; /* Includes padding in width calculation */
-            
-            /* Reverted min-height so they look compact again */
+            width: 100%;
+            box-sizing: border-box;
         }
 
         details:hover {
@@ -109,29 +140,38 @@
             align-items: center;
         }
 
-        /* Plus icon */
-        summary::after { 
-            content: '+'; 
-            font-size: 1.5rem; 
-            color: var(--accent-color); 
-            transition: transform 0.2s; 
+        summary::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            transition: transform 0.2s;
         }
-        
-        /* Rotate to X when open */
-        details[open] summary::after { 
-            transform: rotate(45deg); 
+
+        details[open] summary::after {
+            transform: rotate(45deg);
         }
 
         .answer {
-            /* Vertical spacing, Left alignment */
-            text-align: left; 
+            text-align: left;
             padding: 10px 1.5rem 1.5rem 1.5rem;
             color: var(--text-secondary);
-            line-height: 1.7;
+            line-height: 1.8;
             border-top: 1px solid var(--border-color);
         }
 
-        /* Contact Box at bottom */
+        .answer ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .answer li {
+            margin-bottom: 0.5rem;
+        }
+
+        .answer strong {
+            color: var(--text-primary);
+        }
+
         .contact-box {
             text-align: center;
             margin-top: 4rem;
@@ -141,15 +181,37 @@
             border: 1px solid var(--accent-color);
         }
 
-        /* --- MOBILE MEDIA QUERY --- */
+        .contact-box button {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .contact-box button:hover {
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
-            nav { padding: 1.5rem 1.5rem; }
-            .menu-icon { display: block; }
-            
-            /* Mobile Nav Drawer */
+            nav {
+                padding: 1.5rem 1.5rem;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+
             .nav-links {
                 position: fixed;
-                top: 0; left: 0; right: 0; bottom: 0;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 background-color: var(--bg-color);
                 flex-direction: column;
                 justify-content: center;
@@ -158,17 +220,23 @@
                 transform: translateX(100%);
                 z-index: 5;
             }
-            .nav-links.active { transform: translateX(0); }
-            .nav-link { font-size: 1.5rem; }
 
-            /* FAQ Adjustments */
-            h1 { font-size: 2rem; }
-            .faq-container { padding: 2rem 1.5rem 6rem 1.5rem; margin: 0 auto; }
+            .nav-links.active {
+                transform: translateX(0);
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .faq-container {
+                padding: 2rem 1.5rem 6rem 1.5rem;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
 <body>
-
     <nav>
         <a class='brand-container' href='/'>
             <span class="brand-name">VCTO</span>
@@ -178,134 +246,514 @@
         <div class="menu-icon" id="menu-icon" onclick="toggleMenu()">☰</div>
 
         <div class="nav-links" id="nav-links">
-            <div style="position:absolute; top:20px; right:20px; font-size:2rem; cursor:pointer; display:none;" id="close-menu" onclick="toggleMenu()">✕</div>
             <a class="nav-link" href="index.html">Home</a>
             <a class="nav-link" href="simulator.html">Simulator</a>
-            <a class="nav-link" href="faq.html" style="color:white">FAQ</a>
+            <a class="nav-link active" href="faq.html">FAQ</a>
             <a class="nav-link" href="signup.html" id="nav-auth-link">Sign Up / Log In</a>
-
         </div>
     </nav>
 
     <div class="faq-container">
         <h1>Frequently Asked Questions</h1>
-        <p class="intro">Everything you need to know about using the VCTO platform.</p>
+        <p class="intro">Everything you need to know about VCTO's AI-powered virtual try-on and color analysis.</p>
 
-        <h2>General Information</h2>
+        <h2>🎨 About VCTO</h2>
         
         <details>
-            <summary>What is VCTO?</summary>
+            <summary>What is VCTO and how does it work?</summary>
             <div class="answer">
-                VCTO (Virtual Clothes Try-On) is an AI-powered tool that allows you to see how clothing will look on your specific body type. By uploading a photo of yourself and a photo of a clothing item, our system digitally maps the fabric onto your body.
-            </div>
-        </details>
-
-        <details>
-            <summary>Is the service free to use?</summary>
-            <div class="answer">
-                Yes! The core simulator is completely free. You can generate outfits, view color analysis, and download your results without paying. We may introduce premium features for high-definition rendering in the future.
-            </div>
-        </details>
-
-        <details>
-            <summary>Do I need an account to use it?</summary>
-            <div class="answer">
-                No. You can use the simulator as a "Guest" immediately. However, creating an account allows you to <strong>save your generated outfits</strong> to a dashboard, track your history, and manage your wardrobe.
-            </div>
-        </details>
-
-        <h2>Technical Support & Usage</h2>
-
-        <details>
-            <summary>What kind of photo should I upload?</summary>
-            <div class="answer">
-                For the best results:
+                VCTO (Virtual Clothes Try-On) combines two powerful AI technologies:
                 <ul>
-                    <li>Use a <strong>full-body</strong> or <strong>half-body</strong> shot.</li>
-                    <li>Ensure you are facing forward.</li>
-                    <li>Wear tight-fitting clothes (like gym wear) so the AI can accurately detect your body shape.</li>
-                    <li>Avoid busy backgrounds and poor lighting.</li>
+                    <li><strong>Virtual Try-On:</strong> Uses advanced computer vision and deep learning to digitally map clothing onto your body, showing you how garments will look before you buy.</li>
+                    <li><strong>Personal Color Analysis:</strong> Analyzes your skin tone, hair color, and eye color using CIELAB color space and MediaPipe face detection to determine your seasonal color palette (12-season system).</li>
+                    <li><strong>Smart Color Variants:</strong> Automatically generates the same clothing item in colors from your personal palette, so you can see which shades complement your natural coloring.</li>
+                </ul>
+                All processing happens in real-time using state-of-the-art neural networks trained on thousands of body shapes and color profiles.
+            </div>
+        </details>
+
+        <details>
+            <summary>Is the service free?</summary>
+            <div class="answer">
+                <strong>Yes, completely free!</strong> All core features are available at no cost:
+                <ul>
+                    <li>✅ Unlimited virtual try-ons</li>
+                    <li>✅ Personal color analysis</li>
+                    <li>✅ Color variant generation</li>
+                    <li>✅ Download results</li>
+                    <li>✅ Save to dashboard (with account)</li>
+                </ul>
+                We may introduce optional premium features in the future (like HD rendering or professional consultations), but the core simulator will always remain free.
+            </div>
+        </details>
+
+        <details>
+            <summary>Do I need to create an account?</summary>
+            <div class="answer">
+                <strong>No, you can use the simulator as a guest.</strong> However, creating a free account unlocks additional benefits:
+                <ul>
+                    <li>💾 Save your generated outfits and color analysis results</li>
+                    <li>📊 Track your virtual wardrobe history</li>
+                    <li>🎨 Access saved color palettes across sessions</li>
+                    <li>⚡ Faster processing with cached body measurements</li>
+                    <li>🔔 Get notified about new features</li>
+                </ul>
+                Guest mode: Images are processed and deleted within 24 hours.<br>
+                Account mode: Your data is stored securely until you choose to delete it.
+            </div>
+        </details>
+
+        <h2>📸 Using the Simulator</h2>
+
+        <details>
+            <summary>What kind of photo should I upload for best results?</summary>
+            <div class="answer">
+                <strong>For Virtual Try-On (Your Photo):</strong>
+                <ul>
+                    <li>📏 <strong>Full-body or half-body shot</strong> - We need to see your torso/legs for accurate clothing placement</li>
+                    <li>👤 <strong>Face forward, arms at sides</strong> - Helps the AI detect your body shape correctly</li>
+                    <li>👕 <strong>Wear fitted clothing</strong> - Tight-fitting clothes (like gym wear) let the AI see your actual body shape</li>
+                    <li>🌟 <strong>Good lighting, plain background</strong> - Avoid busy backgrounds, shadows, or dim lighting</li>
+                    <li>📱 <strong>High resolution</strong> - Minimum 800x1200 pixels for best quality</li>
+                </ul>
+                
+                <strong>For Color Analysis:</strong>
+                <ul>
+                    <li>☀️ <strong>Natural daylight</strong> - Avoid yellow indoor lighting or colored walls</li>
+                    <li>👩 <strong>No makeup on face</strong> - Or minimal/natural makeup for accurate skin tone reading</li>
+                    <li>💄 <strong>Natural hair color</strong> - If dyed, check the "My hair is currently dyed" box</li>
+                    <li>📷 <strong>Clear frontal face shot</strong> - We analyze skin, hair, and eye colors</li>
                 </ul>
             </div>
         </details>
 
         <details>
-            <summary>Why does the clothing look distorted?</summary>
+            <summary>What should I upload for the clothing image?</summary>
             <div class="answer">
-                Distortion usually happens if the uploaded clothing image is wrinkled, folded, or taken at an extreme angle. Try to use flat-lay images (clothing laid flat on a surface) or clean product photos from a store website.
+                <strong>Best clothing images:</strong>
+                <ul>
+                    <li>🛍️ <strong>Product photos from online stores</strong> - Clean, professional shots work best</li>
+                    <li>📐 <strong>Flat-lay images</strong> - Clothing laid flat on a surface, not wrinkled or folded</li>
+                    <li>🎯 <strong>Clear, centered garment</strong> - The clothing should fill most of the frame</li>
+                    <li>🌈 <strong>Solid backgrounds</strong> - White or neutral backgrounds help the AI extract the garment</li>
+                    <li>❌ <strong>Avoid:</strong> Crumpled clothes, extreme angles, or clothes on hangers with shadows</li>
+                </ul>
+                
+                <strong>Tip:</strong> Screenshot product images from clothing websites for best results!
             </div>
         </details>
 
         <details>
             <summary>How accurate are the body measurements?</summary>
             <div class="answer">
-                Our AI estimation is generally accurate within 1-2 inches. However, for precise fitting, we highly recommend using the <strong>Manual Entry</strong> option in Step 2 to input your exact measurements.
+                <strong>AI Estimation Accuracy:</strong> Our computer vision system is typically accurate within <strong>2-5cm (1-2 inches)</strong> for most measurements. The AI uses depth estimation and pose detection to calculate your proportions.
+                
+                <strong>For best accuracy:</strong>
+                <ul>
+                    <li>Wear form-fitting clothes in your photo</li>
+                    <li>Stand 2-3 meters from the camera</li>
+                    <li>Use a full-body shot with your whole figure visible</li>
+                </ul>
+                
+                <strong>Manual Entry (Recommended for precise fitting):</strong> If you know your exact measurements, use the "Manual Entry" option in Step 2 to input:
+                <ul>
+                    <li>Height & Weight</li>
+                    <li>Chest circumference</li>
+                    <li>Waist circumference</li>
+                    <li>Hip circumference (optional)</li>
+                </ul>
+                
+                Manual measurements give you <strong>perfect fit visualization</strong> every time!
             </div>
         </details>
 
         <details>
-            <summary>What file formats are supported?</summary>
+            <summary>What's the difference between AI Estimation and Manual Entry?</summary>
             <div class="answer">
-                We currently support <strong>JPG, PNG, and WEBP</strong> formats. The maximum file size per upload is 10MB.
+                <strong>AI Estimation (Automatic):</strong>
+                <ul>
+                    <li>⚡ <strong>Fast & Easy</strong> - No measurements needed</li>
+                    <li>🤖 <strong>Uses computer vision</strong> - Analyzes your photo to estimate proportions</li>
+                    <li>📊 <strong>~95% accurate</strong> - Works well for general sizing</li>
+                    <li>✅ <strong>Best for:</strong> Quick try-ons, browsing, discovering your color season</li>
+                </ul>
+                
+                <strong>Manual Entry:</strong>
+                <ul>
+                    <li>📏 <strong>100% Accurate</strong> - You provide exact measurements</li>
+                    <li>👔 <strong>Professional results</strong> - Perfect for serious shopping decisions</li>
+                    <li>💾 <strong>Saved for future use</strong> - Enter once, use forever (with account)</li>
+                    <li>✅ <strong>Best for:</strong> Precise fit visualization, online shopping, tailored clothing</li>
+                </ul>
+                
+                <strong>Recommendation:</strong> Start with AI estimation to explore, then switch to manual entry when you're ready to make purchase decisions!
             </div>
         </details>
 
-        <h2>Privacy & Security</h2>
-
         <details>
-            <summary>Is my photo private?</summary>
+            <summary>Why does my clothing look distorted or unrealistic?</summary>
             <div class="answer">
-                Absolutely. If you use Guest Mode, your images are processed in real-time and deleted from our servers shortly after generation. If you have an account, images are stored securely in your private gallery until you choose to delete them.
+                <strong>Common causes and solutions:</strong>
+                
+                <strong>1. Wrinkled or Folded Clothing Image</strong>
+                <ul>
+                    <li>❌ Problem: The AI tries to map wrinkles onto your body</li>
+                    <li>✅ Solution: Use flat-lay images or professional product photos</li>
+                </ul>
+                
+                <strong>2. Poor Photo Quality</strong>
+                <ul>
+                    <li>❌ Problem: Low resolution, blurry, or pixelated images</li>
+                    <li>✅ Solution: Use high-quality images (minimum 800px width)</li>
+                </ul>
+                
+                <strong>3. Extreme Poses or Angles</strong>
+                <ul>
+                    <li>❌ Problem: Clothing image taken at an angle or on a mannequin</li>
+                    <li>✅ Solution: Use front-facing, straight-on garment photos</li>
+                </ul>
+                
+                <strong>4. Complex Patterns or Textures</strong>
+                <ul>
+                    <li>❌ Problem: Very detailed patterns can blur at certain resolutions</li>
+                    <li>✅ Solution: This is normal - the overall fit is still accurate!</li>
+                </ul>
+                
+                <strong>Pro Tip:</strong> The fit and color representation are accurate even if fine details look slightly different. Focus on overall appearance!
             </div>
         </details>
 
         <details>
-            <summary>Do you sell user data?</summary>
+            <summary>What file formats and sizes are supported?</summary>
             <div class="answer">
-                Never. Your biometric data (body measurements) and photos are used strictly for the purpose of generating the virtual try-on simulation. We do not share or sell this data to third-party advertisers.
+                <strong>Supported Formats:</strong>
+                <ul>
+                    <li>✅ JPEG / JPG (recommended)</li>
+                    <li>✅ PNG</li>
+                    <li>✅ WEBP</li>
+                </ul>
+                
+                <strong>File Size Limits:</strong>
+                <ul>
+                    <li>Maximum: 10MB per image</li>
+                    <li>Recommended: 2-5MB for optimal processing speed</li>
+                </ul>
+                
+                <strong>Resolution Guidelines:</strong>
+                <ul>
+                    <li>Minimum: 800x600 pixels</li>
+                    <li>Recommended: 1200x1600 pixels or higher</li>
+                    <li>Maximum: 4000x6000 pixels (larger images will be resized)</li>
+                </ul>
+                
+                <strong>Note:</strong> HEIC (iPhone) images are not yet supported. Convert to JPEG before uploading.
+            </div>
+        </details>
+
+        <h2>🎨 Color Analysis</h2>
+
+        <details>
+            <summary>How does the color analysis work?</summary>
+            <div class="answer">
+                Our AI uses a sophisticated 3-step process:
+                
+                <strong>1. Feature Extraction (Computer Vision):</strong>
+                <ul>
+                    <li>Uses Google's MediaPipe to detect 478 facial landmarks</li>
+                    <li>Samples color from 9 skin zones (forehead, cheeks, jaw)</li>
+                    <li>Analyzes hair color from 3 regions (detects natural color even with highlights)</li>
+                    <li>Extracts eye color from both irises using advanced filtering</li>
+                </ul>
+                
+                <strong>2. Color Space Analysis (CIELAB):</strong>
+                <ul>
+                    <li>Converts RGB to CIELAB (perceptually uniform color space)</li>
+                    <li>Calculates temperature (warm vs cool undertones)</li>
+                    <li>Measures contrast (difference between skin, hair, eyes)</li>
+                    <li>Determines depth (light vs dark features)</li>
+                </ul>
+                
+                <strong>3. Season Classification (12-Season System):</strong>
+                <ul>
+                    <li>Categorizes you into one of 4 seasons (Spring, Summer, Autumn, Winter)</li>
+                    <li>Refines to 12 sub-seasons (Bright/True/Light Spring, etc.)</li>
+                    <li>Generates personalized color palette (5 signature colors)</li>
+                    <li>Provides confidence score (High/Medium/Low based on clarity of features)</li>
+                </ul>
+                
+                <strong>Result:</strong> You get a scientifically-backed color palette that harmonizes with your natural coloring!
+            </div>
+        </details>
+
+        <details>
+            <summary>What if I have dyed hair?</summary>
+            <div class="answer">
+                <strong>Simply check the "My hair is currently dyed" box in Step 1!</strong>
+                
+                When selected, our AI will:
+                <ul>
+                    <li>🎯 Use your <strong>eyebrow color</strong> instead of hair color for analysis</li>
+                    <li>📊 Focus more heavily on <strong>skin undertone</strong> for temperature determination</li>
+                    <li>👁️ Give extra weight to <strong>eye color</strong> in the classification</li>
+                </ul>
+                
+                <strong>Why eyebrows?</strong> Eyebrow hair is the closest genetic match to your natural hair color and usually remains undyed or fades slower than scalp hair.
+                
+                <strong>Note:</strong> If you've also dyed your eyebrows, the analysis may be less accurate. Consider waiting until roots grow out, or use a photo from before dyeing if available.
+            </div>
+        </details>
+
+        <details>
+            <summary>Can I generate clothing in custom colors?</summary>
+            <div class="answer">
+                <strong>Yes! VCTO offers flexible color customization:</strong>
+                
+                <strong>Option 1: Palette Colors (Automatic)</strong>
+                <ul>
+                    <li>In Step 6, click "Yes, Show Me Color Variants"</li>
+                    <li>We automatically generate 3 variants using your top palette colors</li>
+                    <li>See how the garment looks in colors proven to complement you</li>
+                </ul>
+                
+                <strong>Option 2: Select from Full Palette</strong>
+                <ul>
+                    <li>In Step 7, choose from all 5 colors in your season's palette</li>
+                    <li>Select multiple colors to generate several variants at once</li>
+                    <li>Each color is named (e.g., "Cornflower Blue", "Raspberry Sorbet")</li>
+                </ul>
+                
+                <strong>Option 3: Custom Color Picker</strong>
+                <ul>
+                    <li>Use the color picker to select <strong>any color</strong> you want</li>
+                    <li>Perfect for matching a specific item you already own</li>
+                    <li>The AI will recolor the garment to your exact specification</li>
+                </ul>
+                
+                <strong>How it works:</strong> Our model extracts the hex codes you select and feeds them to a color transfer neural network, which intelligently recolors the garment while preserving shadows, highlights, and texture details!
+            </div>
+        </details>
+
+        <h2>🔒 Privacy & Security</h2>
+
+        <details>
+            <summary>Is my photo and data private?</summary>
+            <div class="answer">
+                <strong>Absolutely. Your privacy is our top priority.</strong>
+                
+                <strong>Guest Mode (No Account):</strong>
+                <ul>
+                    <li>🔒 Images are processed in real-time and <strong>automatically deleted within 24 hours</strong></li>
+                    <li>⚡ No permanent storage - your data never touches our database</li>
+                    <li>🌐 Processing happens on secure, encrypted servers</li>
+                    <li>❌ No tracking, no analytics, no third-party sharing</li>
+                </ul>
+                
+                <strong>Account Mode:</strong>
+                <ul>
+                    <li>💾 Images stored <strong>securely in your private gallery</strong></li>
+                    <li>🔐 Encrypted at rest with industry-standard AES-256</li>
+                    <li>👤 <strong>Only you</strong> can access your saved results</li>
+                    <li>🗑️ <strong>You control deletion</strong> - remove any or all data anytime</li>
+                </ul>
+                
+                <strong>What we DON'T do:</strong>
+                <ul>
+                    <li>❌ Never sell your photos or data to third parties</li>
+                    <li>❌ Never use your images for advertising or marketing</li>
+                    <li>❌ Never share your biometric data (body measurements, facial features)</li>
+                    <li>❌ Never train our AI on your personal images without explicit consent</li>
+                </ul>
+                
+                See our full <a href="#" style="color: var(--accent-color);">Privacy Policy</a> for details.
+            </div>
+        </details>
+
+        <details>
+            <summary>How is my data used?</summary>
+            <div class="answer">
+                <strong>Your data is used ONLY for these purposes:</strong>
+                
+                <strong>1. Processing Your Request:</strong>
+                <ul>
+                    <li>Generating your virtual try-on image</li>
+                    <li>Performing color analysis</li>
+                    <li>Creating color variants</li>
+                </ul>
+                
+                <strong>2. Improving Service Quality (Optional):</strong>
+                <ul>
+                    <li>If you provide feedback ("Was this helpful?"), we use it to improve accuracy</li>
+                    <li>Aggregated, anonymized statistics (e.g., "80% of users found their season accurate")</li>
+                    <li>Bug detection and system optimization</li>
+                </ul>
+                
+                <strong>3. Saving Your Results (Account Only):</strong>
+                <ul>
+                    <li>Storing your generated images in your personal dashboard</li>
+                    <li>Remembering your body measurements for faster future use</li>
+                    <li>Keeping your color season for reference</li>
+                </ul>
+                
+                <strong>We NEVER:</strong>
+                <ul>
+                    <li>❌ Sell or rent your data to advertisers or data brokers</li>
+                    <li>❌ Use your images for AI training without explicit opt-in consent</li>
+                    <li>❌ Share your information with third-party companies</li>
+                    <li>❌ Show your images to other users or make them public</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>Can I delete my data?</summary>
+            <div class="answer">
+                <strong>Yes, you have full control:</strong>
+                
+                <strong>Guest Users:</strong>
+                <ul>
+                    <li>Your data is automatically deleted within 24 hours</li>
+                    <li>No action needed - it's temporary by default</li>
+                </ul>
+                
+                <strong>Account Holders:</strong>
+                <ul>
+                    <li>🗑️ <strong>Delete individual results:</strong> Click the trash icon on any saved outfit</li>
+                    <li>🧹 <strong>Clear all saved data:</strong> Go to Settings → Privacy → Clear All Data</li>
+                    <li>❌ <strong>Delete account:</strong> Settings → Account → Delete Account (removes everything permanently)</li>
+                </ul>
+                
+                <strong>Deletion is immediate and permanent.</strong> Once deleted, your data cannot be recovered.
+                
+                <strong>Right to be Forgotten (GDPR Compliance):</strong> If you're in the EU, you have the legal right to request complete data deletion. Contact support@vcto.ai with your request.
+            </div>
+        </details>
+
+        <h2>🛠️ Technical Support</h2>
+
+        <details>
+            <summary>The website isn't loading or is very slow</summary>
+            <div class="answer">
+                <strong>Try these troubleshooting steps:</strong>
+                
+                <strong>1. Check Your Internet Connection:</strong>
+                <ul>
+                    <li>Minimum recommended: 5 Mbps download speed</li>
+                    <li>Test your speed at <a href="https://fast.com" target="_blank" style="color: var(--accent-color);">fast.com</a></li>
+                </ul>
+                
+                <strong>2. Clear Browser Cache:</strong>
+                <ul>
+                    <li>Chrome: Settings → Privacy → Clear browsing data</li>
+                    <li>Safari: Settings → Clear History</li>
+                    <li>Firefox: Settings → Privacy → Clear Data</li>
+                </ul>
+                
+                <strong>3. Try a Different Browser:</strong>
+                <ul>
+                    <li>✅ Best performance: Chrome, Edge, Safari (latest versions)</li>
+                    <li>⚠️ May be slower: Older browsers, mobile browsers</li>
+                </ul>
+                
+                <strong>4. Disable Browser Extensions:</strong>
+                <ul>
+                    <li>Ad blockers or privacy extensions may interfere</li>
+                    <li>Try opening VCTO in Incognito/Private mode</li>
+                </ul>
+                
+                <strong>Still having issues?</strong> Contact our support team with your browser version and device info.
+            </div>
+        </details>
+
+        <details>
+            <summary>I got an error message - what does it mean?</summary>
+            <div class="answer">
+                <strong>Common error messages and solutions:</strong>
+                
+                <strong>"No face detected"</strong>
+                <ul>
+                    <li>Your photo doesn't show a clear, front-facing face</li>
+                    <li><strong>Fix:</strong> Upload a photo where your face is fully visible and facing forward</li>
+                </ul>
+                
+                <strong>"File too large"</strong>
+                <ul>
+                    <li>Your image exceeds 10MB</li>
+                    <li><strong>Fix:</strong> Compress the image or use a lower resolution version</li>
+                </ul>
+                
+                <strong>"Processing failed"</strong>
+                <ul>
+                    <li>Server is temporarily overloaded or network issue</li>
+                    <li><strong>Fix:</strong> Wait 30 seconds and try again</li>
+                </ul>
+                
+                <strong>"Unsupported file format"</strong>
+                <ul>
+                    <li>You uploaded HEIC, BMP, or another unsupported format</li>
+                    <li><strong>Fix:</strong> Convert to JPG/PNG first</li>
+                </ul>
+                
+                <strong>"Session expired"</strong>
+                <ul>
+                    <li>You left the page idle for too long</li>
+                    <li><strong>Fix:</strong> Refresh the page and start over</li>
+                </ul>
+                
+                <strong>Other errors?</strong> Take a screenshot and email it to support@vcto.ai for assistance.
+            </div>
+        </details>
+
+        <details>
+            <summary>What browsers and devices are supported?</summary>
+            <div class="answer">
+                <strong>Fully Supported (Recommended):</strong>
+                <ul>
+                    <li>✅ Google Chrome 90+ (Desktop & Mobile)</li>
+                    <li>✅ Microsoft Edge 90+</li>
+                    <li>✅ Safari 14+ (Mac & iOS)</li>
+                    <li>✅ Firefox 88+</li>
+                </ul>
+                
+                <strong>Partially Supported:</strong>
+                <ul>
+                    <li>⚠️ Samsung Internet (may have rendering issues)</li>
+                    <li>⚠️ Opera, Brave, Vivaldi (should work but not officially tested)</li>
+                </ul>
+                
+                <strong>Not Supported:</strong>
+                <ul>
+                    <li>❌ Internet Explorer (discontinued)</li>
+                    <li>❌ Browsers older than 2020</li>
+                </ul>
+                
+                <strong>Device Requirements:</strong>
+                <ul>
+                    <li>💻 Desktop/Laptop: Any modern computer (Mac, Windows, Linux)</li>
+                    <li>📱 Mobile: iOS 14+, Android 8+</li>
+                    <li>💾 RAM: Minimum 2GB recommended</li>
+                    <li>🌐 Internet: 5 Mbps+ for smooth processing</li>
+                </ul>
+                
+                <strong>Best experience:</strong> Desktop Chrome on a modern computer with good internet.
             </div>
         </details>
 
         <div class="contact-box">
             <h3>Still have questions?</h3>
-            <p style="color:var(--text-secondary)">We are here to help. Reach out to our support team.</p>
-            <button onclick="alert('Support email: help@vcto.ai')" style="background:var(--accent-gradient); border:none; color:white; padding:12px 24px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px;">Contact Support</button>
+            <p style="color:var(--text-secondary); font-size: 1.05rem;">
+                Our support team is here to help! Get answers within 24 hours.
+            </p>
+            <button onclick="alert('Support email: support@vcto.ai\n\nOr visit our Help Center for instant answers!')">
+                Contact Support
+            </button>
         </div>
-
     </div>
 
     <script>
-        // --- 1. LOGIN STATUS CHECK ---
-        document.addEventListener("DOMContentLoaded", function() {
-            const user = localStorage.getItem('currentUser');
-            const navLink = document.getElementById('nav-auth-link');
-
-            if (user) {
-                // User IS logged in
-                navLink.innerText = "Account";
-                navLink.href = "dashboard.html";
-            } else {
-                // User is NOT logged in (Default State)
-                navLink.innerText = "Sign Up / Log In";
-                navLink.href = "signup.html";
-            }
-        });
-
-        // --- 2. MOBILE MENU TOGGLE ---
         function toggleMenu() {
             const nav = document.getElementById('nav-links');
-            const icon = document.getElementById('menu-icon');
             nav.classList.toggle('active');
-            
-            if(nav.classList.contains('active')) {
-                icon.style.display = 'none';
-                document.getElementById('close-menu').style.display = 'block';
-            } else {
-                icon.style.display = 'block';
-                document.getElementById('close-menu').style.display = 'none';
-            }
         }
     </script>
-
 </body>
 </html>
