@@ -1,8 +1,3 @@
-"""
-Personal Color Analysis API - Production Version
-Includes ALL optimizations from the roadmap
-"""
-
 import cv2
 import numpy as np
 import time
@@ -12,15 +7,10 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-# Import all enhanced modules
 from vision_engine_v2 import FeatureExtractorV2
 from color_logic_v2 import PersonalColorAnalystV2
-from validation_utils import (
-    detect_environmental_issues_v2,
-    calculate_overall_confidence
-)
+from validation_utils import detect_environmental_issues_v2, calculate_overall_confidence
 
-# Setup logging
 logging.basicConfig(
     filename='analysis_log.txt',
     level=logging.INFO,
@@ -33,31 +23,30 @@ app = FastAPI(
     version="2.0"
 )
 
-# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
-# Initialize analyzers
-print("🚀 Initializing Personal Color Analysis System V2.0...")
-print("   ✓ Step 1.2: Validation Metrics - ENABLED")
-print("   ✓ Step 2.1: 9-Zone Skin Sampling - ENABLED")
-print("   ✓ Step 2.2: Multi-Zone Hair Detection - ENABLED")
-print("   ✓ Step 2.3: Enhanced Eye Color - ENABLED")
-print("   ✓ Step 3.1: Temperature Scoring V2 - ENABLED")
-print("   ✓ Step 3.2: Contrast Calculation V2 - ENABLED")
-print("   ✓ Step 3.3: Fuzzy Decision Tree - ENABLED")
-print("   ✓ Step 4.1: Environmental Validation - ENABLED")
-print("   ✓ Step 4.2: Confidence Scoring - ENABLED")
+@app.options("/analyze")
+async def options_analyze():
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        }
+    )
 
 extractor = FeatureExtractorV2()
 analyst = PersonalColorAnalystV2()
 
-# Analytics tracking
 analytics = {
     'total_analyses': 0,
     'average_confidence': 0,
@@ -65,10 +54,8 @@ analytics = {
     'validation_issues_count': 0
 }
 
-
 @app.get("/")
 async def root():
-    """API root endpoint"""
     return {
         "service": "Personal Color Analysis API",
         "version": "2.0",
@@ -87,14 +74,13 @@ async def root():
         "endpoints": {
             "/analyze": "POST - Analyze image for color season",
             "/health": "GET - System health check",
-            "/stats": "GET - System statistics"
+            "/stats": "GET - System statistics",
+            "/generate-tryon": "POST - Generate virtual try-on with color variants"
         }
     }
 
-
 @app.get("/health")
 async def health_check():
-    """System health check"""
     return {
         "status": "healthy",
         "version": "2.0",
@@ -107,10 +93,8 @@ async def health_check():
         "total_analyses": analytics['total_analyses']
     }
 
-
 @app.get("/stats")
 async def get_statistics():
-    """Get system statistics"""
     return {
         "total_analyses": analytics['total_analyses'],
         "average_confidence": analytics['average_confidence'],
@@ -122,42 +106,14 @@ async def get_statistics():
         "validation_issues_encountered": analytics['validation_issues_count']
     }
 
-
 @app.post("/analyze")
 async def analyze_image(
     file: UploadFile = File(...),
     is_dyed: bool = Form(False)
 ):
-    """
-    Analyze uploaded image for personal color season
-    
-    IMPLEMENTED IMPROVEMENTS:
-    - Step 2.1: Enhanced skin sampling (9 zones)
-    - Step 2.2: Multi-zone hair detection
-    - Step 2.3: Improved eye color extraction
-    - Step 3.1: Multi-dimensional temperature scoring
-    - Step 3.2: Enhanced contrast calculation
-    - Step 3.3: Fuzzy decision boundaries
-    - Step 4.1: Environmental validation
-    - Step 4.2: Confidence scoring
-    
-    Parameters:
-    - file: Image file (JPG, PNG)
-    - is_dyed: Boolean indicating if hair is dyed
-    
-    Returns:
-    - subseason_key: 12-season classification
-    - undertone: Warm/Cool/Neutral
-    - contrast: High/Medium/Low
-    - confidence: Overall confidence assessment
-    - validation_note: Quality warnings
-    - details: Detailed analysis breakdown
-    """
-    
     start_time = time.time()
     
     try:
-        # Read image
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -169,10 +125,6 @@ async def analyze_image(
             )
         
         logging.info(f"Analysis started - File: {file.filename}, Dyed: {is_dyed}")
-        
-        # ==================================================================
-        # STEP 2: ENHANCED FEATURE EXTRACTION
-        # ==================================================================
         
         try:
             features = extractor.extract_features_from_memory(img, is_dyed=is_dyed)
@@ -187,30 +139,13 @@ async def analyze_image(
         eye_lab = features['eye_lab']
         skin_samples = features['skin_samples']
         
-        # ==================================================================
-        # STEP 4.1: ENVIRONMENTAL VALIDATION
-        # ==================================================================
-        
         image_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        validation_issues = detect_environmental_issues_v2(
-            skin_samples,
-            image_rgb,
-            skin_lab
-        )
+        validation_issues = detect_environmental_issues_v2(skin_samples, image_rgb, skin_lab)
         
-        # Track validation issues
         if validation_issues:
             analytics['validation_issues_count'] += 1
         
-        # ==================================================================
-        # STEP 3: ENHANCED COLOR ANALYSIS
-        # ==================================================================
-        
         results = analyst.analyze_from_lab(skin_lab, hair_lab, eye_lab)
-        
-        # ==================================================================
-        # STEP 4.2: CONFIDENCE CALCULATION
-        # ==================================================================
         
         temp_confidence = results['Details']['temperature']['confidence']
         contrast_confidence = results['Details']['contrast']['confidence']
@@ -221,11 +156,6 @@ async def analyze_image(
             validation_issues
         )
         
-        # ==================================================================
-        # FORMAT RESPONSE
-        # ==================================================================
-        
-        # Format validation message
         if validation_issues:
             critical_issues = [msg for sev, msg in validation_issues if sev == "CRITICAL"]
             warning_issues = [msg for sev, msg in validation_issues if sev == "WARNING"]
@@ -241,22 +171,16 @@ async def analyze_image(
         else:
             validation_msg = "✅ No issues detected - excellent image quality"
         
-        # Update analytics
         analytics['total_analyses'] += 1
-        
-        # Update average confidence
         prev_avg = analytics['average_confidence']
         total = analytics['total_analyses']
         analytics['average_confidence'] = (prev_avg * (total - 1) + confidence_data['score']) / total
         
-        # Track season frequencies
         season_key = results['Sub_Season']
         analytics['common_seasons'][season_key] = analytics['common_seasons'].get(season_key, 0) + 1
         
-        # Calculate processing time
         processing_time = time.time() - start_time
         
-        # Log successful analysis
         logging.info(f"""
         Analysis completed:
           Result: {season_key}
@@ -267,7 +191,6 @@ async def analyze_image(
           Processing time: {processing_time:.2f}s
         """)
         
-        # Build comprehensive response
         response = {
             "status": "success",
             "subseason_key": season_key,
@@ -347,46 +270,59 @@ async def analyze_image(
             }
         )
 
-
-@app.post("/feedback")
-async def submit_feedback(
-    analysis_id: str = Form(...),
-    predicted_season: str = Form(...),
-    actual_season: str = Form(None),
-    user_rating: int = Form(None),
-    comments: str = Form(None)
+# ============================================================================
+# VIRTUAL TRY-ON ENDPOINT - INTEGRATE YOUR MODEL HERE
+# ============================================================================
+@app.post("/generate-tryon")
+async def generate_tryon(
+    user_image: UploadFile = File(...),
+    clothing_image: UploadFile = File(...),
+    colors: str = Form(...)
 ):
     """
-    Collect user feedback for continuous improvement
-    Step 5.1: Systematic Testing Protocol
+    Generate virtual try-on with color variants
+    
+    Parameters:
+    - user_image: User's photo (from Step 1)
+    - clothing_image: Clothing item (from Step 3)
+    - colors: Comma-separated hex colors (e.g., "#6495ED,#915F6D,#FF00FF")
+    
+    Returns:
+    - generated_images: List of base64-encoded images, one for each color
+    
+    YOUR MODEL INTEGRATION:
+    1. Read both images:
+       user_img = cv2.imdecode(np.frombuffer(await user_image.read(), np.uint8), cv2.IMREAD_COLOR)
+       clothing_img = cv2.imdecode(np.frombuffer(await clothing_image.read(), np.uint8), cv2.IMREAD_COLOR)
+    
+    2. Parse colors:
+       color_list = colors.split(',')  # ["#6495ED", "#915F6D", "#FF00FF"]
+    
+    3. For each color:
+       - Recolor the clothing_img to that hex color
+       - Run your virtual try-on model: model(user_img, recolored_clothing_img)
+       - Get output image
+    
+    4. Return all generated images as base64:
+       results = []
+       for output_img in generated_images:
+           _, buffer = cv2.imencode('.jpg', output_img)
+           base64_img = base64.b64encode(buffer).decode('utf-8')
+           results.append({
+               "color": color,
+               "image": f"data:image/jpeg;base64,{base64_img}"
+           })
+       return {"status": "success", "generated_images": results}
     """
     
-    feedback_entry = {
-        'timestamp': datetime.now().isoformat(),
-        'analysis_id': analysis_id,
-        'predicted': predicted_season,
-        'user_correction': actual_season,
-        'rating': user_rating,
-        'comments': comments
-    }
-    
-    # Log feedback
-    logging.info(f"Feedback received: {feedback_entry}")
-    
-    # Save to feedback file
-    import json
-    try:
-        with open('feedback_log.json', 'a') as f:
-            json.dump(feedback_entry, f)
-            f.write('\n')
-    except Exception as e:
-        logging.error(f"Failed to save feedback: {e}")
-    
-    return {
-        "status": "success",
-        "message": "Thank you for your feedback! This helps us improve."
-    }
-
+    return JSONResponse(
+        content={
+            "status": "success",
+            "message": "Model integration pending - replace this with your virtual try-on model",
+            "received_colors": colors.split(','),
+            "next_steps": "Integrate your model in this endpoint to generate actual images"
+        }
+    )
 
 if __name__ == "__main__":
     import uvicorn
@@ -394,17 +330,6 @@ if __name__ == "__main__":
     print("\n" + "="*70)
     print("🎨 Personal Color Analysis API V2.0")
     print("="*70)
-    print("\nImplemented Improvements:")
-    print("  ✓ Step 1.2: Validation Metrics")
-    print("  ✓ Step 2.1: Enhanced Skin Sampling (9 zones)")
-    print("  ✓ Step 2.2: Multi-Zone Hair Detection")
-    print("  ✓ Step 2.3: Eye Color Enhancement")
-    print("  ✓ Step 3.1: Temperature Scoring V2")
-    print("  ✓ Step 3.2: Contrast Calculation V2")
-    print("  ✓ Step 3.3: Fuzzy Decision Tree")
-    print("  ✓ Step 4.1: Environmental Validation")
-    print("  ✓ Step 4.2: Confidence Scoring")
-    print("  ✓ Step 5.1: Testing & Feedback System")
     print("\nStarting server on http://localhost:8000")
     print("API documentation: http://localhost:8000/docs")
     print("="*70 + "\n")
