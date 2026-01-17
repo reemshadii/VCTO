@@ -660,12 +660,6 @@
     </div>
 
     <script>
-        const API_CONFIG = {
-            endpoint: 'http://localhost:8000/analyze',
-            tryon_endpoint: 'http://localhost:8000/generate-tryon',
-            enabled: true
-        };
-
         let currentStep = 1;
         let userFile = null;
         let clothingFile = null;
@@ -673,143 +667,56 @@
         let selectedColors = [];
         
         let analysisResults = {
-            undertone: null,
-            season: null,
-            subseason: null,
-            contrast: null,
-            palette: [],
-            colorNames: [],
-            description: '',
+            undertone: "Warm",
+            season: "Spring",
+            subseason: "Bright",
+            contrast: "High",
+            palette: ["#FF3855", "#FFD700", "#00A86B", "#FF007F", "#40E0D0"],
+            colorNames: ["Poppy Red", "Sunflower", "Jade Green", "Bright Rose", "Clear Turquoise"],
+            description: "Clear, vibrant, and warm with high contrast.",
             validationNote: ""
         };
 
-        const COLOR_LOGIC = {
-            "Bright Spring": { 
-                undertone: "Warm", season: "Spring", subseason: "Bright", contrast: "High", 
-                palette: ["#FF3855", "#FFD700", "#00A86B", "#FF007F", "#40E0D0"],
-                colorNames: ["Poppy Red", "Sunflower", "Jade Green", "Bright Rose", "Clear Turquoise"],
-                description: "Clear, vibrant, and warm with high contrast."
-            },
-            "True Spring": { 
-                undertone: "Warm", season: "Spring", subseason: "True", contrast: "Medium", 
-                palette: ["#FE7F9C", "#FFBF00", "#7CFC00", "#FF7F50", "#00CCCC"],
-                colorNames: ["Warm Pink", "Amber Gold", "Grass Green", "Coral", "Bright Aqua"],
-                description: "Warm and fresh with clear colors."
-            },
-            "Light Spring": { 
-                undertone: "Warm", season: "Spring", subseason: "Light", contrast: "Low", 
-                palette: ["#FADADD", "#FFE5B4", "#B0E0E6", "#D0F0C0", "#F5F5DC"],
-                colorNames: ["Pale Peach", "Apricot", "Powder Blue", "Tea Green", "Warm Cream"],
-                description: "Light, warm, and delicate."
-            },
-            "Light Summer": { 
-                undertone: "Cool", season: "Summer", subseason: "Light", contrast: "Low", 
-                palette: ["#C5A3FF", "#F4C2C2", "#A2CFFE", "#D8BFD8", "#B2FFFF"],
-                colorNames: ["Light Lavender", "Baby Pink", "Sky Blue", "Thistle", "Icy Mint"],
-                description: "Cool, light, and soft."
-            },
-            "True Summer": { 
-                undertone: "Cool", season: "Summer", subseason: "True", contrast: "Medium", 
-                palette: ["#6495ED", "#915F6D", "#708090", "#4682B4", "#E0B0FF"],
-                colorNames: ["Cornflower Blue", "Raspberry Sorbet", "Slate", "Steel Blue", "Mauve"],
-                description: "Cool and muted with medium intensity."
-            },
-            "Soft Summer": { 
-                undertone: "Cool", season: "Summer", subseason: "Soft", contrast: "Low", 
-                palette: ["#98817B", "#826671", "#778899", "#5F9EA0", "#BDB76B"],
-                colorNames: ["Cocoa Grey", "Dusty Plum", "Cool Grey", "Cadet Blue", "Soft Sage"],
-                description: "Cool and muted with low contrast."
-            },
-            "Soft Autumn": { 
-                undertone: "Warm", season: "Autumn", subseason: "Soft", contrast: "Low", 
-                palette: ["#C2B280", "#A68966", "#6B8E23", "#BC8F8F", "#8E7618"],
-                colorNames: ["Sand", "Warm Taupe", "Olive Drab", "Antique Rose", "Old Gold"],
-                description: "Warm and muted with soft tones."
-            },
-            "True Autumn": { 
-                undertone: "Warm", season: "Autumn", subseason: "True", contrast: "Medium", 
-                palette: ["#8B4513", "#D2691E", "#556B2F", "#DAA520", "#B22222"],
-                colorNames: ["Saddle Brown", "Burnt Orange", "Forest Green", "Goldenrod", "Brick Red"],
-                description: "Warm and rich with earthy tones."
-            },
-            "Deep Autumn": { 
-                undertone: "Warm", season: "Autumn", subseason: "Deep", contrast: "High", 
-                palette: ["#4B3621", "#800000", "#1B4D3E", "#DAA520", "#3E2723"],
-                colorNames: ["Espresso", "Oxblood", "Deep Teal", "Antique Gold", "Dark Chocolate"],
-                description: "Warm and deep with rich colors."
-            },
-            "Deep Winter": { 
-                undertone: "Cool", season: "Winter", subseason: "Deep", contrast: "High", 
-                palette: ["#000080", "#4A0E0E", "#004225", "#36454F", "#000000"],
-                colorNames: ["Midnight Navy", "Deep Bordeaux", "Pine Green", "Charcoal", "True Black"],
-                description: "Cool and deep with high contrast."
-            },
-            "True Winter": { 
-                undertone: "Cool", season: "Winter", subseason: "True", contrast: "High", 
-                palette: ["#0000FF", "#E0115F", "#FFFFFF", "#000000", "#00FFFF"],
-                colorNames: ["Royal Blue", "Ruby Red", "Pure White", "Pitch Black", "Electric Blue"],
-                description: "Cool and clear with high contrast."
-            },
-            "Bright Winter": { 
-                undertone: "Cool", season: "Winter", subseason: "Bright", contrast: "High", 
-                palette: ["#FF00FF", "#00FF7F", "#1F75FE", "#FFFFFF", "#000000"],
-                colorNames: ["Magenta", "Spring Green", "Sapphire", "Stark White", "True Black"],
-                description: "Cool and vibrant with high contrast."
-            }
-        };
+        /* ========================================================================
+           PLACEHOLDER: YOUR BACKEND INTEGRATION GOES HERE
+           
+           When you connect your backend, replace performColorAnalysis() to:
+           1. Send userFile to your /analyze endpoint
+           2. Receive back: season, palette colors, etc.
+           3. Update analysisResults object
+           
+           Example:
+           async function performColorAnalysis() {
+               const formData = new FormData();
+               formData.append('file', userFile);
+               formData.append('is_dyed', document.getElementById('dyedHair').checked);
+               
+               const response = await fetch('YOUR_BACKEND_URL/analyze', {
+                   method: 'POST',
+                   body: formData
+               });
+               
+               const data = await response.json();
+               analysisResults = {
+                   undertone: data.undertone,
+                   season: data.season,
+                   subseason: data.subseason,
+                   contrast: data.contrast,
+                   palette: data.palette,
+                   colorNames: data.colorNames,
+                   description: data.description,
+                   validationNote: data.validation_note
+               };
+               
+               updateResultsDisplay();
+               showStepLogic(5);
+           }
+        ======================================================================== */
 
         async function performColorAnalysis() {
-            const statusEl = document.getElementById('processing-status');
-            const isDyed = document.getElementById('dyedHair').checked;
-            
-            statusEl.innerText = "Extracting facial features and analyzing colors...";
-            
-            const formData = new FormData();
-            formData.append('file', userFile);
-            formData.append('is_dyed', isDyed);
-
-            try {
-                const response = await fetch(API_CONFIG.endpoint, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                
-                if (data.status === "error") {
-                    throw new Error(data.message || "Analysis failed");
-                }
-
-                const seasonKey = data.subseason_key;
-                const seasonData = COLOR_LOGIC[seasonKey];
-                
-                if (!seasonData) {
-                    throw new Error("Unknown season returned: " + seasonKey);
-                }
-
-                analysisResults = {
-                    undertone: data.undertone,
-                    season: seasonData.season,
-                    subseason: seasonData.subseason,
-                    contrast: data.contrast,
-                    palette: seasonData.palette,
-                    colorNames: seasonData.colorNames,
-                    description: seasonData.description,
-                    validationNote: data.validation_note || ""
-                };
-
-                updateResultsDisplay();
-                showStepLogic(5);
-
-            } catch (err) {
-                console.error('Analysis error:', err);
-                alert(`Analysis Error: ${err.message}\n\nPlease check:\n1. Backend server is running\n2. API endpoint is correct\n3. Image shows a clear face`);
-                showStepLogic(1);
-            }
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            updateResultsDisplay();
+            showStepLogic(5);
         }
 
         function updateResultsDisplay() {
@@ -853,29 +760,21 @@
         }
 
         /* ========================================================================
-           VIRTUAL TRY-ON MODEL INTEGRATION - STEP 7 COLOR VARIANT GENERATION
-           ========================================================================
+           PLACEHOLDER: YOUR VIRTUAL TRY-ON MODEL GOES HERE
            
-           This section handles generating clothing variants in different colors.
-           Replace the placeholder logic with your actual model integration.
+           When you integrate your model, replace these functions to:
+           1. Take userFile, clothingFile, and hex color
+           2. Call your model endpoint
+           3. Return generated image (user wearing colored clothing)
            
-           WHAT YOU NEED TO DO:
-           1. In generateVariants() - Generate try-on images for first 3 palette colors
-           2. In generateCustomVariants() - Generate try-on for user-selected colors
-           
-           YOUR MODEL SHOULD:
-           - Input: userFile (user photo), clothingFile (clothing image), color (hex code)
-           - Output: Image of user wearing clothing in that color
-           - Return: base64 encoded image string
-           
-           EXAMPLE INTEGRATION:
-           async function callYourModel(userImg, clothingImg, hexColor) {
+           Example:
+           async function callYourModel(color) {
                const formData = new FormData();
-               formData.append('user_image', userImg);
-               formData.append('clothing_image', clothingImg);
-               formData.append('color', hexColor);
+               formData.append('user_image', userFile);
+               formData.append('clothing_image', clothingFile);
+               formData.append('color', color);
                
-               const response = await fetch(API_CONFIG.tryon_endpoint, {
+               const response = await fetch('YOUR_BACKEND_URL/generate-tryon', {
                    method: 'POST',
                    body: formData
                });
@@ -892,11 +791,6 @@
             analysisResults.palette.slice(0, 3).forEach((color, i) => {
                 const card = document.createElement('div');
                 card.className = 'result-card';
-                
-                /* TODO: Replace this placeholder with your model call
-                   const generatedImage = await callYourModel(userFile, clothingFile, color);
-                   Then use generatedImage instead of clothingFile below */
-                
                 card.innerHTML = `
                     <input type="checkbox" class="variant-checkbox" data-color="${color}">
                     <div class="result-img">
@@ -951,13 +845,6 @@
             
             const grid = document.getElementById('variants-grid');
             
-            /* TODO: Replace this placeholder with actual model calls
-               for (const color of selectedColors) {
-                   const generatedImage = await callYourModel(userFile, clothingFile, color);
-                   // Add generated image to grid
-               }
-            */
-            
             selectedColors.forEach((color, i) => {
                 const card = document.createElement('div');
                 card.className = 'result-card';
@@ -976,8 +863,6 @@
             
             document.querySelectorAll('.palette-color-btn').forEach(btn => btn.classList.remove('selected'));
         }
-
-        /* ======================================================================== */
 
         function triggerUpload(id) {
             document.getElementById(id).click();
