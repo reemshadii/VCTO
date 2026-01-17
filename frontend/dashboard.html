@@ -8,14 +8,12 @@
         :root { --bg-color: #0b0c15; --card-bg: #161b2c; --sidebar-bg: #111422; --text-primary: #ffffff; --text-secondary: #a0aec0; --accent-color: #6366f1; --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); --border-color: #2d3748; --error-color: #ef4444; }
         body { background-color: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; }
         
-        /* SIDEBAR */
         .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); padding: 2rem; display: flex; flex-direction: column; }
         .brand { font-size: 2rem; font-weight: 900; letter-spacing: 1px; color: white; line-height: 1; margin-bottom: 5px; }
         .subtitle { font-size: 0.75rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 3rem; }
         .nav-link { color: var(--text-secondary); text-decoration: none; padding: 14px; margin-bottom: 8px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease; display: block; cursor: pointer; }
         .nav-link:hover, .nav-link.active { background-color: rgba(99, 102, 241, 0.1); color: var(--accent-color); border-left: 3px solid var(--accent-color); }
         
-        /* CONTENT */
         .main-content { flex: 1; padding: 2.5rem; overflow-y: auto; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
         h1 { margin: 0; font-size: 2rem; }
@@ -35,7 +33,6 @@
 
         .outfit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
         
-        /* Dragging Styles */
         .outfit-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; position: relative; cursor: grab; transition: all 0.2s; }
         .outfit-card.dragging { opacity: 0.5; border: 2px dashed var(--accent-color); }
         
@@ -146,13 +143,46 @@
     <script>
         const currentUserData = localStorage.getItem('currentUser');
         let currentUser = null;
-        if (currentUserData) { currentUser = JSON.parse(currentUserData); document.getElementById('user-email-display').innerText = currentUser.email; } 
-        else { alert("Sign in first!"); window.location.href = "index.html"; }
+        if (currentUserData) { 
+            currentUser = JSON.parse(currentUserData); 
+            document.getElementById('user-email-display').innerText = currentUser.email; 
+        } else { 
+            alert("Sign in first!"); 
+            window.location.href = "index.html"; 
+        }
+
+        /* ========================================================================
+           PLACEHOLDER: BACKEND INTEGRATION
+           
+           When simulator saves results, it should:
+           1. Call backend /save-outfit endpoint with:
+              - userPhoto (base64)
+              - clothingPhoto (base64) 
+              - generatedImage (base64 from your model)
+              - colorSeason (string)
+              - palette (array of hex codes)
+           
+           2. Backend saves to database with outfit ID
+           
+           3. Frontend stores outfit reference:
+              savedOutfits.push({
+                  id: outfitId,
+                  name: "Look #1",
+                  date: new Date().toISOString(),
+                  userPhoto: base64String,
+                  clothingPhoto: base64String,
+                  generatedImage: base64String,  // This is from your model
+                  colorSeason: "Bright Spring",
+                  palette: ["#FF3855", "#FFD700", ...],
+                  isFavorite: false
+              });
+           
+           Then call saveData() to persist to localStorage
+        ======================================================================== */
 
         let savedOutfits = JSON.parse(localStorage.getItem('vcto_saved_outfits')) || [];
         document.getElementById('total-outfits').innerText = savedOutfits.length;
 
-        // --- INDEPENDENT STATE PERSISTENCE ---
         let savedSortState = localStorage.getItem('vcto_saved_sort') || 'custom';
         let favSortState = localStorage.getItem('vcto_fav_sort') || 'custom';
         
@@ -177,7 +207,6 @@
                 let btnClass = "tool-btn";
                 const currentState = getCurrentSortState();
 
-                // --- BUTTON TEXT WITH ARROWS ---
                 if (currentState === 'custom') {
                     sortBtnText = "Custom Order";
                 } else if (currentState === 'reverse') {
@@ -210,7 +239,6 @@
             
             if(isSelectionMode) container.classList.add('selection-active'); else container.classList.remove('selection-active');
             
-            // TIP Management
             const tipId = currentView === 'favorites' ? 'drag-tip-favorites' : 'drag-tip-saved';
             const tip = document.getElementById(tipId);
             if(tip) {
@@ -218,17 +246,14 @@
                 else tip.style.display = 'none';
             }
 
-            // FILTER
             let listToRender = currentView === 'favorites' ? savedOutfits.filter(o => o.isFavorite) : savedOutfits.filter(o => !o.isFavorite);
             
-            // SORT LOGIC
             const currentState = getCurrentSortState();
             if (currentState === 'reverse') {
                 listToRender.sort((a, b) => new Date(b.date) - new Date(a.date));
             } else if (currentState === 'chronological') {
                 listToRender.sort((a, b) => new Date(a.date) - new Date(b.date));
-            } 
-            // If 'custom', we respect default array order
+            }
 
             renderToolbar();
 
@@ -241,16 +266,16 @@
                 card.className = 'outfit-card';
                 if(selectedIds.has(outfit.id)) card.classList.add('selected');
                 
-                // DRAG ATTRIBUTES: Only if CUSTOM order and NOT selecting
                 const canDrag = (currentState === 'custom') && !isSelectionMode;
                 card.setAttribute('draggable', canDrag); 
                 card.setAttribute('data-id', outfit.id);
                 
                 card.onclick = (e) => { if(!isSelectionMode) return; if(e.target.tagName === 'BUTTON') return; toggleSelect(outfit.id); };
                 
-                // Build image display - show clothing photo or user photo
                 let imageHTML = 'Look';
-                if (outfit.clothingPhoto) {
+                if (outfit.generatedImage) {
+                    imageHTML = `<img src="data:image/jpeg;base64,${outfit.generatedImage}" style="width:100%; height:100%; object-fit:cover;" alt="Generated Try-On">`;
+                } else if (outfit.clothingPhoto) {
                     imageHTML = `<img src="data:image/jpeg;base64,${outfit.clothingPhoto}" style="width:100%; height:100%; object-fit:cover;" alt="Clothing">`;
                 } else if (outfit.userPhoto) {
                     imageHTML = `<img src="data:image/jpeg;base64,${outfit.userPhoto}" style="width:100%; height:100%; object-fit:cover;" alt="User Photo">`;
@@ -281,7 +306,6 @@
         function toggleSelect(id) { if (selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id); render(); }
         function toggleSelectAll() { const list = currentView === 'favorites' ? savedOutfits.filter(o => o.isFavorite) : savedOutfits.filter(o => !o.isFavorite); const allSelected = list.every(o => selectedIds.has(o.id)); if (allSelected) selectedIds.clear(); else list.forEach(o => selectedIds.add(o.id)); render(); }
         
-        // INDEPENDENT CYCLE & SAVE
         function cycleSort() { 
             let currentState = getCurrentSortState();
             let nextState = 'custom';
@@ -319,16 +343,20 @@
             const outfit = savedOutfits.find(o => o.id === id);
             if (!outfit) return;
             
-            // Download clothing photo or user photo
-            if (outfit.clothingPhoto) {
+            if (outfit.generatedImage) {
+                const link = document.createElement('a');
+                link.href = `data:image/jpeg;base64,${outfit.generatedImage}`;
+                link.download = `${outfit.name.replace(/\s+/g, '_')}_tryon.jpg`;
+                link.click();
+            } else if (outfit.clothingPhoto) {
                 const link = document.createElement('a');
                 link.href = `data:image/jpeg;base64,${outfit.clothingPhoto}`;
-                link.download = `${outfit.name.replace(/\s+/g, '_')}_${outfit.clothingFileName || 'clothing.jpg'}`;
+                link.download = `${outfit.name.replace(/\s+/g, '_')}_clothing.jpg`;
                 link.click();
             } else if (outfit.userPhoto) {
                 const link = document.createElement('a');
                 link.href = `data:image/jpeg;base64,${outfit.userPhoto}`;
-                link.download = `${outfit.name.replace(/\s+/g, '_')}_${outfit.userFileName || 'photo.jpg'}`;
+                link.download = `${outfit.name.replace(/\s+/g, '_')}_photo.jpg`;
                 link.click();
             } else {
                 alert('No image available for this outfit');
@@ -338,7 +366,6 @@
         function renameOutfit(id) { const newName = prompt("New Name:"); if (newName) { savedOutfits.find(o => o.id === id).name = newName; saveData(); } }
         function saveData() { localStorage.setItem('vcto_saved_outfits', JSON.stringify(savedOutfits)); document.getElementById('total-outfits').innerText = savedOutfits.length; render(); }
         
-        // --- DRAG AND DROP LOGIC ---
         let dragSrcEl = null;
         function dragStart(e) { 
             dragSrcEl = this; 
